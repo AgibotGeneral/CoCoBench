@@ -1,0 +1,131 @@
+{
+  "task_id": "A_D2__FloorPlan13__kitchen_seed0",
+  "coordination_dim": "D2",
+  "task_family": "A",
+  "task_name": "kitchen_ordered_cabinet_loading",
+  "scene_id": "FloorPlan13",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-A",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-B",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan13",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "Apple|-04.23|+00.96|+02.73",
+      "item_2": "Tomato|-04.16|+00.97|+04.39",
+      "container": "Cabinet|-00.33|+02.25|+03.01"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "Apple|-04.23|+00.96|+02.73"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Tomato|-04.16|+00.97|+04.39"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Cabinet|-00.33|+02.25|+03.01"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Cabinet|-00.33|+02.25|+03.01",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "Engine-enforced precedence: a closed cabinet rejects Put, so Open must precede every Put; closing before all items are in would block the remaining Puts.",
+      "agent_1 opens + loads the first item; agent_2 loads the rest then closes -> cross-agent ordering. Kitchen storage (Cabinet/Drawer) -- a third, non-C D2 carrier."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "Wait",
+    "PickUp",
+    "Put",
+    "Drop",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "closed",
+      "object": "container"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Open(container)",
+        "Put(item, container)"
+      ],
+      [
+        "Put(item, container)",
+        "Close(container)"
+      ]
+    ],
+    "role_constraints": [
+      "Both agents share all skills; the ordering open -> load(all) -> close is the coordination signal."
+    ],
+    "legal_plan": "Open before any placement; close only after all items are inside."
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 2,
+    "step_budget": 50,
+    "partial_observability": true,
+    "oracle_steps": 17
+  },
+  "provenance": {
+    "generator": "gen_cabinet_d2.py",
+    "placement_verified": true,
+    "room": "kitchen"
+  },
+  "step_budget": 26
+}

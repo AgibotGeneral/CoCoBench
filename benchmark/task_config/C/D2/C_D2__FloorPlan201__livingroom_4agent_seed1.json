@@ -1,0 +1,188 @@
+{
+  "task_id": "C_D2__FloorPlan201__livingroom_4agent_seed1",
+  "coordination_dim": "D2",
+  "task_family": "C",
+  "task_name": "ordered_container_loading",
+  "scene_id": "FloorPlan201",
+  "agent_count": 4,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Agent-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_4",
+      "role": "Agent-4",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan201",
+      "agentCount": 4,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-02.14|+00.25|+06.38",
+      "item_2": "Watch|-04.25|+00.47|+06.16",
+      "item_3": "CreditCard|-02.27|+00.70|+01.01",
+      "item_4": "RemoteControl|-00.68|+00.47|+05.89",
+      "container": "Box|-01.83|+00.88|+01.18"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-02.14|+00.25|+06.38"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Watch|-04.25|+00.47|+06.16"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-02.27|+00.70|+01.01"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|-00.68|+00.47|+05.89"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Box|-01.83|+00.88|+01.18"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Box|-01.83|+00.88|+01.18",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "Engine-enforced precedence: a closed container rejects Put, so Open must precede every Put; closing before all items are in would block the remaining Puts.",
+      "agent_1 opens + loads the first item; the other agents load the rest; the last loader closes -> a cross-agent ordering chain that lengthens with 4 items. Box-type container."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "Wait",
+    "PickUp",
+    "Put",
+    "Drop",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_4",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "closed",
+      "object": "container"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Open(container)",
+        "Put(item, container)"
+      ],
+      [
+        "Put(item, container)",
+        "Close(container)"
+      ]
+    ],
+    "role_constraints": [
+      "All agents share all skills; the ordering open -> load(all) -> close is the coordination signal."
+    ],
+    "legal_plan": "Open before any placement; close only after all items are inside."
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 4,
+    "step_budget": 64,
+    "partial_observability": true,
+    "oracle_steps": 29
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "living_room",
+    "agent_count": 4,
+    "spawn_seed": 1
+  },
+  "step_budget": 44
+}

@@ -1,0 +1,206 @@
+{
+  "task_id": "H_D1__FloorPlan210__4agent_seed0",
+  "coordination_dim": "D1",
+  "task_family": "H",
+  "task_name": "living_room_personal_drawer_storage",
+  "scene_id": "FloorPlan210",
+  "agent_count": 4,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Tidier-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Tidier-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Tidier-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_4",
+      "role": "Tidier-4",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan210",
+      "agentCount": 4,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-04.14|+00.41|+00.43",
+      "drawer_1": "Drawer|-00.36|+00.21|+03.80",
+      "item_2": "Watch|-02.99|+01.10|+04.09",
+      "drawer_2": "Drawer|-00.36|+00.21|+04.22",
+      "item_3": "CreditCard|-04.31|+00.41|+00.58",
+      "drawer_3": "Drawer|-00.36|+00.58|+03.80",
+      "item_4": "RemoteControl|-04.12|+00.43|+01.21",
+      "drawer_4": "Drawer|-00.36|+00.58|+04.23"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-04.14|+00.41|+00.43"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|-00.36|+00.21|+03.80"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Watch|-02.99|+01.10|+04.09"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|-00.36|+00.21|+04.22"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-04.31|+00.41|+00.58"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|-00.36|+00.58|+03.80"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|-04.12|+00.43|+01.21"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|-00.36|+00.58|+04.23"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|-00.36|+00.21|+03.80",
+        "forceAction": true
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|-00.36|+00.21|+04.22",
+        "forceAction": true
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|-00.36|+00.58|+03.80",
+        "forceAction": true
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|-00.36|+00.58|+04.23",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "D1 independent parallelism scaled to 4 agents: each agent owns one drawer and stores one item; lines share no object and impose no cross-agent ordering.",
+      "Action counts are symmetric per agent, so the balanced schedule is the makespan optimum and a single-agent solution multiplies makespan by n."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "drawer_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "drawer_2"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "drawer_3"
+    },
+    {
+      "predicate": "on",
+      "object": "item_4",
+      "receptacle": "drawer_4"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "Open(drawer_1)",
+        "PickUp(item_1)",
+        "Put(item_1, drawer_1)"
+      ],
+      [
+        "Open(drawer_2)",
+        "PickUp(item_2)",
+        "Put(item_2, drawer_2)"
+      ],
+      [
+        "Open(drawer_3)",
+        "PickUp(item_3)",
+        "Put(item_3, drawer_3)"
+      ],
+      [
+        "Open(drawer_4)",
+        "PickUp(item_4)",
+        "Put(item_4, drawer_4)"
+      ]
+    ],
+    "legal_plan": "Each agent opens its own drawer and stores its own item; all lines are independent and may run in parallel.",
+    "optimal_makespan": 6
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 4,
+    "step_budget": 48,
+    "partial_observability": true,
+    "oracle_steps": 25
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "living_room",
+    "agent_count": 4
+  },
+  "step_budget": 38
+}

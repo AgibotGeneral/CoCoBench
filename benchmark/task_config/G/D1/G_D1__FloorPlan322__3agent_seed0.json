@@ -1,0 +1,143 @@
+{
+  "task_id": "G_D1__FloorPlan322__3agent_seed0",
+  "coordination_dim": "D1",
+  "task_family": "G",
+  "task_name": "bedroom_parallel_sorting",
+  "scene_id": "FloorPlan322",
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Sorter-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Sorter-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Sorter-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan322",
+      "agentCount": 3,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "CreditCard|+02.55|+00.98|+00.62",
+      "target_1": "SideTable|-01.60|+00.00|+01.48",
+      "item_2": "CellPhone|+02.65|+00.98|+01.17",
+      "target_2": "SideTable|-01.60|+00.00|-01.25",
+      "item_3": "Pen|+02.94|+00.99|+00.18",
+      "target_3": "ArmChair|+02.57|+00.00|-00.82"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|+02.55|+00.98|+00.62"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|-01.60|+00.00|+01.48"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|+02.65|+00.98|+01.17"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|-01.60|+00.00|-01.25"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Pen|+02.94|+00.99|+00.18"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "ArmChair|+02.57|+00.00|-00.82"
+      }
+    ],
+    "design_notes": [
+      "D1 has no cross-agent ordering: each of 3 agents moves one item to a distinct receptacle surface.",
+      "Only non-openable receptacles are used so the task stays focused on independent allocation."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target_2"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target_3"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "PickUp(item_1)",
+        "Put(item_1, target_1)"
+      ],
+      [
+        "PickUp(item_2)",
+        "Put(item_2, target_2)"
+      ],
+      [
+        "PickUp(item_3)",
+        "Put(item_3, target_3)"
+      ]
+    ],
+    "legal_plan": "The placement lines are independent and may run in any order or in parallel.",
+    "optimal_makespan": 4
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 30,
+    "partial_observability": true,
+    "oracle_steps": 13
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 3
+  },
+  "step_budget": 20
+}

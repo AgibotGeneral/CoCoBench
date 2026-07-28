@@ -1,0 +1,139 @@
+{
+  "task_id": "H_D2__FloorPlan218__seed1",
+  "coordination_dim": "D2",
+  "task_family": "H",
+  "task_name": "living_room_ordered_drawer_loading",
+  "scene_id": "FloorPlan218",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-A",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-B",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan218",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "CreditCard|+00.97|+00.98|+04.13",
+      "item_2": "RemoteControl|-07.23|+00.03|+02.34",
+      "container": "Drawer|+00.75|+00.67|+04.10"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|+00.97|+00.98|+04.13"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|-07.23|+00.03|+02.34"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.75|+00.67|+04.10"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.75|+00.67|+04.10",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "Engine-enforced precedence: a closed drawer rejects Put, so Open must precede every Put; closing before all items are in would block the remaining Puts.",
+      "agent_1 opens + loads the first item; agent_2 loads the rest then closes -> cross-agent ordering. Bedroom storage furniture (Drawer/Cabinet) instead of the C family's Box."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "Wait",
+    "PickUp",
+    "Put",
+    "Drop",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "closed",
+      "object": "container"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Open(container)",
+        "Put(item, container)"
+      ],
+      [
+        "Put(item, container)",
+        "Close(container)"
+      ]
+    ],
+    "role_constraints": [
+      "Both agents share all skills; the ordering open -> load(all) -> close is the coordination signal."
+    ],
+    "legal_plan": "Open before any placement; close only after all items are inside."
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 2,
+    "step_budget": 50,
+    "partial_observability": true,
+    "oracle_steps": 17
+  },
+  "provenance": {
+    "generator": "gen_livingroom_coordination.py",
+    "placement_verified": true,
+    "room": "living_room",
+    "spawn_seed": 1
+  },
+  "step_budget": 26
+}

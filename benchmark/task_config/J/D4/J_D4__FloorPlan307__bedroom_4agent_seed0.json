@@ -1,0 +1,180 @@
+{
+  "task_id": "J_D4__FloorPlan307__bedroom_4agent_seed0",
+  "coordination_dim": "D4",
+  "task_family": "J",
+  "task_name": "bedroom_cross_zone_handoff_relay_fan",
+  "scene_id": "FloorPlan307",
+  "agent_count": 4,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Source-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Source-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Agent-Target-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_4",
+      "role": "Agent-Target-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan307",
+      "agentCount": 4,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-01.48|+00.86|-02.28",
+      "item_2": "CreditCard|-01.36|+00.86|-02.45",
+      "item_3": "RemoteControl|-01.68|+00.86|-02.37",
+      "item_4": "CellPhone|-00.38|+00.86|-02.27",
+      "transfer": "SideTable|+01.48|+00.00|-01.48",
+      "target": "Desk|+00.24|+00.00|-02.36"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-01.48|+00.86|-02.28"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-01.36|+00.86|-02.45"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|-01.68|+00.86|-02.37"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-00.38|+00.86|-02.27"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|+01.48|+00.00|-01.48"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Desk|+00.24|+00.00|-02.36"
+      }
+    ],
+    "design_notes": [
+      "4 clutter items relayed source -> ONE buffer surface (capacity 2) -> storage target by 2 producers feeding the buffer and 2 consumers draining it.",
+      "Second D4 carrier (family J): the single buffer is the coordination chokepoint at any agent count."
+    ]
+  },
+  "allowed_skills": [
+    "Drop",
+    "Explore",
+    "Find",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_4",
+      "receptacle": "target"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(item, transfer)",
+        "Target.PickUp(item from transfer)"
+      ],
+      [
+        "Target.PickUp(item)",
+        "Target.Put(item, target)"
+      ]
+    ],
+    "role_constraints": [
+      "Producers handle source-to-buffer; consumers handle buffer-to-target."
+    ],
+    "legal_plan": "Each item must pass through the transfer surface before final placement.",
+    "buffer_stations": [
+      {
+        "objectId": "SideTable|+01.48|+00.00|-01.48",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producers": [
+        "agent_1",
+        "agent_2"
+      ],
+      "consumers": [
+        "agent_3",
+        "agent_4"
+      ],
+      "buffer": "SideTable|+01.48|+00.00|-01.48",
+      "targets": [
+        "Desk|+00.24|+00.00|-02.36"
+      ],
+      "note": "Relay enforced at the action menu: producers Put->buffer only; consumers PickUp only on-buffer items, Put->target only. The single buffer is the D4 chokepoint regardless of agent count."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 4,
+    "step_budget": 88,
+    "partial_observability": true,
+    "oracle_steps": 65
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py(J)",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 4
+  },
+  "step_budget": 98
+}

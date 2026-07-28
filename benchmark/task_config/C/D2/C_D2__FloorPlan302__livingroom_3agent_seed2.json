@@ -1,0 +1,164 @@
+{
+  "task_id": "C_D2__FloorPlan302__livingroom_3agent_seed2",
+  "coordination_dim": "D2",
+  "task_family": "C",
+  "task_name": "ordered_container_loading",
+  "scene_id": "FloorPlan302",
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Agent-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 2,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan302",
+      "agentCount": 3,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-01.25|+00.80|-01.25",
+      "item_2": "CreditCard|-01.26|+01.46|-01.43",
+      "item_3": "CellPhone|-01.18|+00.80|-00.40",
+      "container": "Safe|+01.62|+00.00|+00.45"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 2,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-01.25|+00.80|-01.25"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-01.26|+01.46|-01.43"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-01.18|+00.80|-00.40"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Safe|+01.62|+00.00|+00.45"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Safe|+01.62|+00.00|+00.45",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "Engine-enforced precedence: a closed container rejects Put, so Open must precede every Put; closing before all items are in would block the remaining Puts.",
+      "agent_1 opens + loads the first item; the other agents load the rest; the last loader closes -> a cross-agent ordering chain that lengthens with 3 items. Box-type container."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "Wait",
+    "PickUp",
+    "Put",
+    "Drop",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "closed",
+      "object": "container"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Open(container)",
+        "Put(item, container)"
+      ],
+      [
+        "Put(item, container)",
+        "Close(container)"
+      ]
+    ],
+    "role_constraints": [
+      "All agents share all skills; the ordering open -> load(all) -> close is the coordination signal."
+    ],
+    "legal_plan": "Open before any placement; close only after all items are inside."
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 48,
+    "partial_observability": true,
+    "oracle_steps": 23
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 3,
+    "spawn_seed": 2
+  },
+  "step_budget": 34
+}

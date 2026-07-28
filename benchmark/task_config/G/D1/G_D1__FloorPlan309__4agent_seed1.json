@@ -1,0 +1,180 @@
+{
+  "task_id": "G_D1__FloorPlan309__4agent_seed1",
+  "coordination_dim": "D1",
+  "task_family": "G",
+  "task_name": "bedroom_parallel_sorting",
+  "scene_id": "FloorPlan309",
+  "agent_count": 4,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Sorter-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Sorter-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Sorter-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_4",
+      "role": "Sorter-4",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan309",
+      "agentCount": 4,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-02.10|+00.46|-02.56",
+      "target_1": "SideTable|+01.78|+00.05|+02.38",
+      "item_2": "CreditCard|+01.22|+00.82|+00.12",
+      "target_2": "Desk|-01.27|+01.16|-02.99",
+      "item_3": "RemoteControl|-03.33|+00.36|-02.80",
+      "target_3": "ArmChair|-00.95|+00.05|+03.58",
+      "item_4": "Pen|-02.15|+00.47|-02.57",
+      "target_4": "ArmChair|-02.17|+00.05|+03.60"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-02.10|+00.46|-02.56"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|+01.78|+00.05|+02.38"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|+01.22|+00.82|+00.12"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Desk|-01.27|+01.16|-02.99"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|-03.33|+00.36|-02.80"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "ArmChair|-00.95|+00.05|+03.58"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Pen|-02.15|+00.47|-02.57"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "ArmChair|-02.17|+00.05|+03.60"
+      }
+    ],
+    "design_notes": [
+      "D1 has no cross-agent ordering: each of 4 agents moves one item to a distinct receptacle surface.",
+      "Only non-openable receptacles are used so the task stays focused on independent allocation."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target_2"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target_3"
+    },
+    {
+      "predicate": "on",
+      "object": "item_4",
+      "receptacle": "target_4"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "PickUp(item_1)",
+        "Put(item_1, target_1)"
+      ],
+      [
+        "PickUp(item_2)",
+        "Put(item_2, target_2)"
+      ],
+      [
+        "PickUp(item_3)",
+        "Put(item_3, target_3)"
+      ],
+      [
+        "PickUp(item_4)",
+        "Put(item_4, target_4)"
+      ]
+    ],
+    "legal_plan": "The placement lines are independent and may run in any order or in parallel.",
+    "optimal_makespan": 4
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 4,
+    "step_budget": 24,
+    "partial_observability": true,
+    "oracle_steps": 17
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 4,
+    "spawn_seed": 1
+  },
+  "step_budget": 26
+}

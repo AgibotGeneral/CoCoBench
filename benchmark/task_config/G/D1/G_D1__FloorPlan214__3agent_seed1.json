@@ -1,0 +1,151 @@
+{
+  "task_id": "G_D1__FloorPlan214__3agent_seed1",
+  "coordination_dim": "D1",
+  "task_family": "G",
+  "task_name": "living_room_parallel_sorting",
+  "scene_id": "FloorPlan214",
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Sorter-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Sorter-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Sorter-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan214",
+      "agentCount": 3,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-04.13|+00.50|+06.63",
+      "target_1": "Sofa|-02.49|+00.03|+00.73",
+      "item_2": "CreditCard|-00.59|+00.11|+00.92",
+      "target_2": "Sofa|-04.36|+00.03|+02.93",
+      "item_3": "RemoteControl|-00.75|+00.62|+00.92",
+      "target_3": "CoffeeTable|-02.65|+00.02|+04.06"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-04.13|+00.50|+06.63"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Sofa|-02.49|+00.03|+00.73"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-00.59|+00.11|+00.92"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Sofa|-04.36|+00.03|+02.93"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|-00.75|+00.62|+00.92"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CoffeeTable|-02.65|+00.02|+04.06"
+      }
+    ],
+    "design_notes": [
+      "D1 has no cross-agent ordering: each of 3 agents moves one item to a distinct receptacle surface.",
+      "Only non-openable receptacles are used so the task stays focused on independent allocation."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target_2"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target_3"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "PickUp(item_1)",
+        "Put(item_1, target_1)"
+      ],
+      [
+        "PickUp(item_2)",
+        "Put(item_2, target_2)"
+      ],
+      [
+        "PickUp(item_3)",
+        "Put(item_3, target_3)"
+      ]
+    ],
+    "legal_plan": "The placement lines are independent and may run in any order or in parallel.",
+    "optimal_makespan": 4
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 18,
+    "partial_observability": true,
+    "oracle_steps": 13
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "living_room",
+    "agent_count": 3,
+    "spawn_seed": 1
+  },
+  "step_budget": 20
+}

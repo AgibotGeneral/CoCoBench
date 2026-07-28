@@ -1,0 +1,150 @@
+{
+  "task_id": "C_D4__FloorPlan303__livingroom_seed2",
+  "coordination_dim": "D4",
+  "task_family": "C",
+  "task_name": "living_room_multi_object_relay",
+  "scene_id": "FloorPlan303",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Source",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Target",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 2,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan303",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-01.35|+00.36|-00.23",
+      "item_2": "CreditCard|+01.85|+00.02|-02.27",
+      "item_3": "CellPhone|-01.66|+00.60|-00.82",
+      "transfer": "SideTable|+00.44|+00.04|-02.65",
+      "target": "SideTable|-01.82|+00.00|-01.14"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 2,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-01.35|+00.36|-00.23"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|+01.85|+00.02|-02.27"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-01.66|+00.60|-00.82"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|+00.44|+00.04|-02.65"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|-01.82|+00.00|-01.14"
+      }
+    ],
+    "design_notes": [
+      "3 personal items are relayed source -> transfer surface (capacity 2) -> target surface.",
+      "Multi-object + capacity-limited buffer creates producer-consumer queue pressure (overflow/starvation).",
+      "Agent-Source may only Put on the transfer surface; Agent-Target may only PickUp on-transfer items and Put on the target."
+    ]
+  },
+  "allowed_skills": [
+    "Drop",
+    "Explore",
+    "Find",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(item, transfer)",
+        "Target.PickUp(item from transfer)"
+      ],
+      [
+        "Target.PickUp(item)",
+        "Target.Put(item, target)"
+      ]
+    ],
+    "role_constraints": [
+      "Source handles source-to-transfer; Target handles transfer-to-target."
+    ],
+    "legal_plan": "Each item must pass through the transfer surface before final placement.",
+    "buffer_stations": [
+      {
+        "objectId": "SideTable|+00.44|+00.04|-02.65",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producer": "agent_1",
+      "consumer": "agent_2",
+      "buffer": "SideTable|+00.44|+00.04|-02.65",
+      "targets": [
+        "SideTable|-01.82|+00.00|-01.14"
+      ],
+      "note": "Relay enforced at the action menu: producer Put->buffer only; consumer PickUp only on-buffer items, Put->target only. Forces the transfer point (D4)."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 72,
+    "partial_observability": true,
+    "oracle_steps": 49
+  },
+  "provenance": {
+    "generator": "gen_livingroom_coordination.py",
+    "placement_verified": true,
+    "spawn_seed": 2
+  },
+  "step_budget": 74
+}

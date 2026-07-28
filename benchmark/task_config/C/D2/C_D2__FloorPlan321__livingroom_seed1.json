@@ -1,0 +1,138 @@
+{
+  "task_id": "C_D2__FloorPlan321__livingroom_seed1",
+  "coordination_dim": "D2",
+  "task_family": "C",
+  "task_name": "ordered_container_loading",
+  "scene_id": "FloorPlan321",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-A",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-B",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Put",
+        "Drop",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan321",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|+00.82|+00.47|-02.26",
+      "item_2": "CreditCard|+03.63|+00.05|-01.05",
+      "container": "Drawer|+00.33|+00.62|+01.30"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|+00.82|+00.47|-02.26"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|+03.63|+00.05|-01.05"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.33|+00.62|+01.30"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.33|+00.62|+01.30",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "Engine-enforced precedence: a closed container rejects Put, so Open must precede every Put; closing before all items are in would block the remaining Puts.",
+      "agent_1 opens + loads the first item; agent_2 loads the rest then closes -> cross-agent ordering."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "Wait",
+    "PickUp",
+    "Put",
+    "Drop",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "container"
+    },
+    {
+      "predicate": "closed",
+      "object": "container"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Open(container)",
+        "Put(item, container)"
+      ],
+      [
+        "Put(item, container)",
+        "Close(container)"
+      ]
+    ],
+    "role_constraints": [
+      "Both agents share all skills; the ordering open -> load(all) -> close is the coordination signal."
+    ],
+    "legal_plan": "Open before any placement; close only after all items are inside."
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 2,
+    "step_budget": 50,
+    "partial_observability": true,
+    "oracle_steps": 17
+  },
+  "provenance": {
+    "generator": "gen_livingroom_coordination.py",
+    "placement_verified": true,
+    "spawn_seed": 1
+  },
+  "step_budget": 26
+}

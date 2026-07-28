@@ -1,0 +1,180 @@
+{
+  "task_id": "C_D4__FloorPlan207__living_room_4agent_seed0",
+  "coordination_dim": "D4",
+  "task_family": "C",
+  "task_name": "multi_object_relay_fan",
+  "scene_id": "FloorPlan207",
+  "agent_count": 4,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Source-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Source-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Target-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_4",
+      "role": "Target-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan207",
+      "agentCount": 4,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|+01.74|+00.75|+00.76",
+      "item_2": "Watch|+01.46|+00.75|+00.54",
+      "item_3": "CreditCard|+01.53|+00.75|+00.73",
+      "item_4": "RemoteControl|+01.51|+00.75|-00.21",
+      "transfer": "Sofa|-01.45|+00.01|+00.42",
+      "target": "CoffeeTable|-00.15|+00.00|+00.42"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|+01.74|+00.75|+00.76"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Watch|+01.46|+00.75|+00.54"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|+01.53|+00.75|+00.73"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "RemoteControl|+01.51|+00.75|-00.21"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Sofa|-01.45|+00.01|+00.42"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CoffeeTable|-00.15|+00.00|+00.42"
+      }
+    ],
+    "design_notes": [
+      "4 items are relayed source -> ONE transfer surface (capacity 2) -> target by 2 producers feeding the buffer and 2 consumers draining it.",
+      "Fan-in/fan-out keeps the single buffer as the coordination chokepoint at any agent count; producers may only Put on the buffer, consumers may only PickUp on-buffer items and Put on the target."
+    ]
+  },
+  "allowed_skills": [
+    "Drop",
+    "Explore",
+    "Find",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_4",
+      "receptacle": "target"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(item, transfer)",
+        "Target.PickUp(item from transfer)"
+      ],
+      [
+        "Target.PickUp(item)",
+        "Target.Put(item, target)"
+      ]
+    ],
+    "role_constraints": [
+      "Producers handle source-to-buffer; consumers handle buffer-to-target."
+    ],
+    "legal_plan": "Each item must pass through the transfer surface before final placement.",
+    "buffer_stations": [
+      {
+        "objectId": "Sofa|-01.45|+00.01|+00.42",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producers": [
+        "agent_1",
+        "agent_2"
+      ],
+      "consumers": [
+        "agent_3",
+        "agent_4"
+      ],
+      "buffer": "Sofa|-01.45|+00.01|+00.42",
+      "targets": [
+        "CoffeeTable|-00.15|+00.00|+00.42"
+      ],
+      "note": "Relay enforced at the action menu: producers Put->buffer only; consumers PickUp only on-buffer items, Put->target only. The single buffer is the D4 chokepoint regardless of agent count."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 4,
+    "step_budget": 88,
+    "partial_observability": true,
+    "oracle_steps": 65
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "living_room",
+    "agent_count": 4
+  },
+  "step_budget": 98
+}

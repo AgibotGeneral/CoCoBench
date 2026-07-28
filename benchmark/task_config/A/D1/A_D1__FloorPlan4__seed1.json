@@ -1,0 +1,134 @@
+{
+  "task_id": "A_D1__FloorPlan4__seed1",
+  "coordination_dim": "D1",
+  "task_family": "A",
+  "task_name": "store_groceries_and_lights_off",
+  "scene_id": "FloorPlan4",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Tidy-A",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "ToggleOn",
+        "ToggleOff",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Tidy-B",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "ToggleOn",
+        "ToggleOff",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan4",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "potato": "Potato|-01.20|+00.08|+00.44",
+      "lettuce": "Lettuce|-00.79|+01.11|+02.59",
+      "fridge": "Fridge|-03.52|+00.00|+02.72",
+      "light": "LightSwitch|-02.58|+01.30|+03.50"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Potato|-01.20|+00.08|+00.44"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Lettuce|-00.79|+01.11|+02.59"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Fridge|-03.52|+00.00|+02.72"
+      },
+      {
+        "action": "ensure_toggle_state",
+        "objectId": "LightSwitch|-02.58|+01.30|+03.50",
+        "isToggled": true,
+        "note": "The light starts on; the goal is to turn it off."
+      }
+    ],
+    "design_notes": [
+      "D1 has no cross-dependency: food storage and light switching can be assigned independently.",
+      "The Fridge is used as the storage receptacle because it is volumetric and reliably accepts multiple food items in validated instances."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put",
+    "ToggleOn",
+    "ToggleOff",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "potato",
+      "receptacle": "fridge"
+    },
+    {
+      "predicate": "on",
+      "object": "lettuce",
+      "receptacle": "fridge"
+    },
+    {
+      "predicate": "toggled",
+      "object": "light",
+      "value": false
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Open(fridge)",
+        "Put(food, fridge)"
+      ]
+    ],
+    "legal_plan": "The storage line requires Open before Put; the light-switch line is independent.",
+    "optimal_makespan": 7
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 2,
+    "step_budget": 20,
+    "partial_observability": true,
+    "oracle_steps": 14
+  },
+  "provenance": {
+    "generator": "gen_kitchen_coordination.py",
+    "spawn_seed": 1
+  },
+  "step_budget": 21
+}

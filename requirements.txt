@@ -1,0 +1,10 @@
+# Multi-agent embodied coordination benchmark — runtime dependencies
+# Install:  pip install -r requirements.txt
+# (VLM policies talk to an OpenAI-/Anthropic-compatible HTTP endpoint via `requests`,
+#  configured by OPENAI_BASE_URL / OPENAI_API_KEY or ANTHROPIC_BASE_URL / ANTHROPIC_AUTH_TOKEN;
+#  no vendor SDK is required.)
+
+ai2thor>=5.0.0
+Pillow
+requests
+PyYAML

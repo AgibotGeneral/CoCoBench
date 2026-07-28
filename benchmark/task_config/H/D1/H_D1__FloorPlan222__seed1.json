@@ -1,0 +1,139 @@
+{
+  "task_id": "H_D1__FloorPlan222__seed1",
+  "coordination_dim": "D1",
+  "task_family": "H",
+  "task_name": "living_room_personal_drawer_storage",
+  "scene_id": "FloorPlan222",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Tidier-A",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Tidier-B",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan222",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-00.56|+00.62|-01.56",
+      "item_2": "Watch|-00.86|+00.61|-01.60",
+      "drawer_1": "Drawer|+00.47|+00.06|-00.17",
+      "drawer_2": "Drawer|+00.47|+00.17|-00.17"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-00.56|+00.62|-01.56"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Watch|-00.86|+00.61|-01.60"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.47|+00.06|-00.17"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.47|+00.17|-00.17"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.47|+00.06|-00.17",
+        "forceAction": true
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.47|+00.17|-00.17",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "D1 independent parallelism: each agent owns one drawer and stores one personal item into it; the two lines share no object and impose no cross-agent ordering.",
+      "The open-before-put is a LOCAL precondition inside each agent's own line, not a coordination dependency; action counts are symmetric (6 per agent), so the balanced schedule is the makespan optimum and a single-agent solution doubles it."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "drawer_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "drawer_2"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "Open(drawer_1)",
+        "PickUp(item_1)",
+        "Put(item_1, drawer_1)"
+      ],
+      [
+        "Open(drawer_2)",
+        "PickUp(item_2)",
+        "Put(item_2, drawer_2)"
+      ]
+    ],
+    "legal_plan": "Each agent opens its own drawer and stores its own item; the two lines are independent and may run in parallel.",
+    "optimal_makespan": 6
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 2,
+    "step_budget": 24,
+    "partial_observability": true,
+    "oracle_steps": 13
+  },
+  "provenance": {
+    "generator": "gen_livingroom_coordination.py",
+    "placement_verified": true,
+    "room": "living_room",
+    "spawn_seed": 1
+  },
+  "step_budget": 20
+}

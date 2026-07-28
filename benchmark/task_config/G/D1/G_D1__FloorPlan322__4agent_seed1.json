@@ -1,0 +1,180 @@
+{
+  "task_id": "G_D1__FloorPlan322__4agent_seed1",
+  "coordination_dim": "D1",
+  "task_family": "G",
+  "task_name": "bedroom_parallel_sorting",
+  "scene_id": "FloorPlan322",
+  "agent_count": 4,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Sorter-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Sorter-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Sorter-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_4",
+      "role": "Sorter-4",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan322",
+      "agentCount": 4,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|+01.35|+00.02|-01.75",
+      "target_1": "SideTable|-01.60|+00.00|+01.48",
+      "item_2": "CellPhone|-01.52|+00.05|-01.41",
+      "target_2": "SideTable|-01.60|+00.00|-01.25",
+      "item_3": "Pencil|-01.28|+00.63|+00.34",
+      "target_3": "ArmChair|+02.57|+00.00|-00.82",
+      "item_4": "Book|-00.47|+00.65|+00.56",
+      "target_4": "Dresser|+02.82|+00.00|+01.01"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|+01.35|+00.02|-01.75"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|-01.60|+00.00|+01.48"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-01.52|+00.05|-01.41"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|-01.60|+00.00|-01.25"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Pencil|-01.28|+00.63|+00.34"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "ArmChair|+02.57|+00.00|-00.82"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Book|-00.47|+00.65|+00.56"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Dresser|+02.82|+00.00|+01.01"
+      }
+    ],
+    "design_notes": [
+      "D1 has no cross-agent ordering: each of 4 agents moves one item to a distinct receptacle surface.",
+      "Only non-openable receptacles are used so the task stays focused on independent allocation."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target_2"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target_3"
+    },
+    {
+      "predicate": "on",
+      "object": "item_4",
+      "receptacle": "target_4"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "PickUp(item_1)",
+        "Put(item_1, target_1)"
+      ],
+      [
+        "PickUp(item_2)",
+        "Put(item_2, target_2)"
+      ],
+      [
+        "PickUp(item_3)",
+        "Put(item_3, target_3)"
+      ],
+      [
+        "PickUp(item_4)",
+        "Put(item_4, target_4)"
+      ]
+    ],
+    "legal_plan": "The placement lines are independent and may run in any order or in parallel.",
+    "optimal_makespan": 4
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 4,
+    "step_budget": 24,
+    "partial_observability": true,
+    "oracle_steps": 17
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 4,
+    "spawn_seed": 1
+  },
+  "step_budget": 26
+}

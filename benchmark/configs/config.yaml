@@ -1,0 +1,25 @@
+# Public evaluation template. Keep API credentials in environment variables.
+model_name: example-model
+
+vlm_backend: openai
+openai_base_url: https://api.openai.com/v1
+openai_max_tokens: null
+obs_mode: image
+
+eval_set: []
+only_cell: ""
+only_family: ""
+only_dim: ""
+task_id: []
+limit: 0
+
+out_root: null
+
+gpu_device: 0
+platform: CloudRendering
+width: 300
+height: 300
+
+max_steps: null
+timeout: null
+dry_run: false

@@ -1,0 +1,152 @@
+{
+  "task_id": "J_D4__FloorPlan309__bedroom_seed2",
+  "coordination_dim": "D4",
+  "task_family": "J",
+  "task_name": "bedroom_cross_zone_handoff_relay",
+  "scene_id": "FloorPlan309",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Source",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Target",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 2,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan309",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|+01.63|+00.59|+02.48",
+      "item_2": "CreditCard|-01.89|+00.46|-02.37",
+      "item_3": "Laptop|-01.54|+01.11|-03.16",
+      "transfer": "ArmChair|-00.95|+00.05|+03.58",
+      "target": "ArmChair|-02.17|+00.05|+03.60"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 2,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|+01.63|+00.59|+02.48"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-01.89|+00.46|-02.37"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Laptop|-01.54|+01.11|-03.16"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "ArmChair|-00.95|+00.05|+03.58"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "ArmChair|-02.17|+00.05|+03.60"
+      }
+    ],
+    "design_notes": [
+      "3 clutter items are relayed source -> buffer surface (capacity 2) -> storage target.",
+      "Second D4 carrier (family J) in a new room type so the D4 construct is not measured on family C alone.",
+      "Multi-object + capacity-limited buffer creates producer-consumer queue pressure (overflow/starvation).",
+      "Agent-Source may only Put on the buffer; Agent-Target may only PickUp on-buffer items and Put on the target."
+    ]
+  },
+  "allowed_skills": [
+    "Drop",
+    "Explore",
+    "Find",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(item, transfer)",
+        "Target.PickUp(item from transfer)"
+      ],
+      [
+        "Target.PickUp(item)",
+        "Target.Put(item, target)"
+      ]
+    ],
+    "role_constraints": [
+      "Source handles source-to-buffer; Target handles buffer-to-target."
+    ],
+    "legal_plan": "Each item must pass through the buffer surface before final placement.",
+    "buffer_stations": [
+      {
+        "objectId": "ArmChair|-00.95|+00.05|+03.58",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producer": "agent_1",
+      "consumer": "agent_2",
+      "buffer": "ArmChair|-00.95|+00.05|+03.58",
+      "targets": [
+        "ArmChair|-02.17|+00.05|+03.60"
+      ],
+      "note": "Relay enforced at the action menu: producer Put->buffer only; consumer PickUp only on-buffer items, Put->target only. Forces the transfer point (D4)."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 72,
+    "partial_observability": true,
+    "oracle_steps": 49
+  },
+  "provenance": {
+    "generator": "gen_relay_handoff.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "spawn_seed": 2
+  },
+  "step_budget": 74
+}

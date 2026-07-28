@@ -1,0 +1,136 @@
+{
+    "task_id": "K_D3__FloorPlan1__seed0",
+    "coordination_dim": "D3",
+    "task_family": "K",
+    "task_name": "shared_knife_slicing",
+    "scene_id": "FloorPlan1",
+    "agent_count": 2,
+    "agents": [
+        {
+            "id": "agent_1",
+            "role": "Chef-1",
+            "allowed_skills": [
+                "Find",
+                "Explore",
+                "Wait",
+                "PickUp",
+                "Drop",
+                "Slice"
+            ]
+        },
+        {
+            "id": "agent_2",
+            "role": "Chef-2",
+            "allowed_skills": [
+                "Find",
+                "Explore",
+                "Wait",
+                "PickUp",
+                "Drop",
+                "Slice"
+            ]
+        }
+    ],
+    "seed": 0,
+    "assignment": {
+        "item_1": "agent_1",
+        "item_2": "agent_2"
+    },
+    "init_state": {
+        "controller_init": {
+            "scene": "FloorPlan1",
+            "agentCount": 2,
+            "gridSize": 0.25,
+            "visibilityDistance": 1.5
+        },
+        "objects": {
+            "item_1": "Potato|-01.66|+00.93|-02.15",
+            "item_2": "Apple|-00.47|+01.15|+00.48",
+            "knife": "Knife|-01.70|+00.79|-00.22"
+        },
+        "init_actions": [
+            {
+                "action": "assert_present",
+                "objectId": "Potato|-01.66|+00.93|-02.15"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Apple|-00.47|+01.15|+00.48"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Knife|-01.70|+00.79|-00.22"
+            },
+            {
+                "action": "PickupObject",
+                "objectId": "Knife|-01.70|+00.79|-00.22",
+                "agentId": 0,
+                "forceAction": true
+            },
+            {
+                "action": "PutObject",
+                "objectId": "CounterTop|+00.69|+00.95|-02.48",
+                "agentId": 0,
+                "forceAction": true,
+                "placeStationary": true
+            }
+        ],
+        "design_notes": [
+            "D3 shared-tool exclusion: all agents share a single Knife.",
+            "Each agent must acquire the Knife, slice their assigned food item(s), then release it.",
+            "PickUp mutual exclusion is engine-enforced: only one agent can hold the Knife.",
+            "Slice requires holding the Knife (executor-enforced precondition).",
+            "sliced_by goal: each item must be sliced by its assigned agent."
+        ]
+    },
+    "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Drop",
+        "Slice"
+    ],
+    "goal_predicates": [
+        {
+            "predicate": "sliced_by",
+            "object": "item_1",
+            "agent": "agent_1"
+        },
+        {
+            "predicate": "sliced_by",
+            "object": "item_2",
+            "agent": "agent_2"
+        }
+    ],
+    "task_constraints": {
+        "resource_exclusion": [
+            {
+                "resource": "shared_knife",
+                "resource_id": "Knife|-01.70|+00.79|-00.22",
+                "exclusive": true,
+                "mechanism": "pickup_exclusion",
+                "note": "Only one agent can hold the Knife at a time (engine-enforced PickUp exclusion)."
+            }
+        ],
+        "scheduling": "any_permutation",
+        "legal_plan": "Each agent must acquire the shared Knife, slice their food, and release it before the next agent can use it."
+    },
+    "success_fn": "all_goal_predicates_and_legal_plan",
+    "eval_layer": "L0",
+    "difficulty": {
+        "object_count": 3,
+        "step_budget": 24,
+        "partial_observability": true,
+        "oracle_steps": 19
+    },
+    "provenance": {
+        "generator": "gen_shared_knife_d3.py",
+        "placement_verified": true,
+        "pickup_exclusion_verified": true,
+        "room": "kitchen",
+        "asymmetric": false
+    },
+    "step_budget": 36,
+    "optimal_makespan": 18
+}

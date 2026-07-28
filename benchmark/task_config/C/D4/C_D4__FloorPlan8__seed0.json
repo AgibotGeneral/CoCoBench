@@ -1,0 +1,152 @@
+{
+  "task_id": "C_D4__FloorPlan8__seed0",
+  "coordination_dim": "D4",
+  "task_family": "C",
+  "task_name": "multi_object_relay_via_transfer_point",
+  "scene_id": "FloorPlan8",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Source",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Target",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan8",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "food_1": "Potato|+01.21|+00.94|+00.57",
+      "food_2": "Tomato|-01.82|+00.94|+00.43",
+      "food_3": "Apple|+00.99|+00.94|-01.11",
+      "transfer_plate": "Plate|+01.43|+01.15|-00.54",
+      "fridge": "Fridge|+01.42|+00.00|+02.10"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "Potato|+01.21|+00.94|+00.57"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Tomato|-01.82|+00.94|+00.43"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Apple|+00.99|+00.94|-01.11"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Plate|+01.43|+01.15|-00.54"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Fridge|+01.42|+00.00|+02.10"
+      },
+      {
+        "action": "OpenObject",
+        "objectId": "Fridge|+01.42|+00.00|+02.10",
+        "forceAction": true,
+        "note": "Fridge starts open so the consumer can deposit relayed foods."
+      }
+    ],
+    "design_notes": [
+      "3 foods are relayed source -> transfer Plate (capacity 2) -> Fridge.",
+      "Multi-object + capacity-limited buffer creates producer-consumer queue pressure:",
+      "a producer that over-deposits overflows the Plate; a consumer that lags starves it.",
+      "Agent-Source may only Put on the Plate; Agent-Target may only PickUp on-Plate foods and Put in the Fridge."
+    ]
+  },
+  "allowed_skills": [
+    "Close",
+    "Drop",
+    "Explore",
+    "Find",
+    "Open",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "food_1",
+      "receptacle": "fridge"
+    },
+    {
+      "predicate": "on",
+      "object": "food_2",
+      "receptacle": "fridge"
+    },
+    {
+      "predicate": "on",
+      "object": "food_3",
+      "receptacle": "fridge"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(food, transfer_plate)",
+        "Target.PickUp(food from transfer_plate)"
+      ],
+      [
+        "Target.PickUp(food)",
+        "Target.Put(food, fridge)"
+      ]
+    ],
+    "role_constraints": [
+      "Source handles source-to-transfer; Target handles transfer-to-fridge."
+    ],
+    "legal_plan": "Each food must pass through the transfer point before the fridge placement.",
+    "buffer_stations": [
+      {
+        "objectId": "Plate|+01.43|+01.15|-00.54",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producer": "agent_1",
+      "consumer": "agent_2",
+      "buffer": "Plate|+01.43|+01.15|-00.54",
+      "targets": [
+        "Fridge|+01.42|+00.00|+02.10"
+      ],
+      "note": "Relay enforced at the action menu: producer Put->buffer only; consumer PickUp only on-buffer objects, Put->fridge only. Forces the transfer point (D4)."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 78,
+    "partial_observability": true,
+    "oracle_steps": 53
+  },
+  "provenance": {
+    "generator": "gen_kitchen_coordination.py"
+  },
+  "step_budget": 80
+}

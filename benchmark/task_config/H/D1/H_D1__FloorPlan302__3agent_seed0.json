@@ -1,0 +1,169 @@
+{
+  "task_id": "H_D1__FloorPlan302__3agent_seed0",
+  "coordination_dim": "D1",
+  "task_family": "H",
+  "task_name": "bedroom_personal_drawer_storage",
+  "scene_id": "FloorPlan302",
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Tidier-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Tidier-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Tidier-3",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Open",
+        "Close"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan302",
+      "agentCount": 3,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-00.55|+00.80|-01.52",
+      "drawer_1": "Drawer|+00.30|+00.16|+01.16",
+      "item_2": "CreditCard|-00.39|+00.80|-01.70",
+      "drawer_2": "Drawer|+00.30|+00.46|+01.16",
+      "item_3": "CellPhone|-01.07|+00.80|-00.64",
+      "drawer_3": "Drawer|+00.42|+00.53|-01.55"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-00.55|+00.80|-01.52"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.30|+00.16|+01.16"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-00.39|+00.80|-01.70"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.30|+00.46|+01.16"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-01.07|+00.80|-00.64"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Drawer|+00.42|+00.53|-01.55"
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.30|+00.16|+01.16",
+        "forceAction": true
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.30|+00.46|+01.16",
+        "forceAction": true
+      },
+      {
+        "action": "CloseObject",
+        "objectId": "Drawer|+00.42|+00.53|-01.55",
+        "forceAction": true
+      }
+    ],
+    "design_notes": [
+      "D1 independent parallelism scaled to 3 agents: each agent owns one drawer and stores one item; lines share no object and impose no cross-agent ordering.",
+      "Action counts are symmetric per agent, so the balanced schedule is the makespan optimum and a single-agent solution multiplies makespan by n."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put",
+    "Open",
+    "Close"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "drawer_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "drawer_2"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "drawer_3"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "Open(drawer_1)",
+        "PickUp(item_1)",
+        "Put(item_1, drawer_1)"
+      ],
+      [
+        "Open(drawer_2)",
+        "PickUp(item_2)",
+        "Put(item_2, drawer_2)"
+      ],
+      [
+        "Open(drawer_3)",
+        "PickUp(item_3)",
+        "Put(item_3, drawer_3)"
+      ]
+    ],
+    "legal_plan": "Each agent opens its own drawer and stores its own item; all lines are independent and may run in parallel.",
+    "optimal_makespan": 6
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 36,
+    "partial_observability": true,
+    "oracle_steps": 19
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 3
+  },
+  "step_budget": 28
+}

@@ -1,0 +1,59 @@
+{
+  "task_family": "G",
+  "family_name": "living_room_parallel_sorting",
+  "coordination_dims": [
+    "D1"
+  ],
+  "description": "Living-room personal-item sorting tasks focused on independent parallelism and task allocation. Each agent can complete one placement line without waiting for the other.",
+  "scene_scan": {
+    "range": "FloorPlan201-230",
+    "candidate_rule": "Contains at least two pickupable personal items and at least two non-openable receptacle surfaces. Generated instances are kept only when SkillExecutor verifies both placements.",
+    "selected_scenes": [
+      "FloorPlan201",
+      "FloorPlan202",
+      "FloorPlan203",
+      "FloorPlan204",
+      "FloorPlan205",
+      "FloorPlan206",
+      "FloorPlan207",
+      "FloorPlan208",
+      "FloorPlan209",
+      "FloorPlan210",
+      "FloorPlan211",
+      "FloorPlan212"
+    ],
+    "validated_instances": [
+      "G_D1__FloorPlan201__seed0",
+      "G_D1__FloorPlan202__seed0",
+      "G_D1__FloorPlan203__seed0",
+      "G_D1__FloorPlan204__seed0",
+      "G_D1__FloorPlan205__seed0",
+      "G_D1__FloorPlan206__seed0",
+      "G_D1__FloorPlan207__seed0",
+      "G_D1__FloorPlan208__seed0",
+      "G_D1__FloorPlan209__seed0",
+      "G_D1__FloorPlan210__seed0",
+      "G_D1__FloorPlan211__seed0",
+      "G_D1__FloorPlan212__seed0"
+    ]
+  },
+  "skill_pool": {
+    "Sorter-A": [
+      "Find",
+      "Explore",
+      "PickUp",
+      "Put"
+    ],
+    "Sorter-B": [
+      "Find",
+      "Explore",
+      "PickUp",
+      "Put"
+    ]
+  },
+  "goal_predicate_definitions": {
+    "on(objId, receptacleId)": "obj.parentReceptacles contains receptacleId",
+    "legal_plan": "The two placement lines are independent; either line may execute first."
+  },
+  "default_success_fn": "all_goal_predicates_and_legal_plan"
+}

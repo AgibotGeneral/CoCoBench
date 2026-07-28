@@ -1,0 +1,166 @@
+{
+  "task_id": "J_D4__FloorPlan316__bedroom_3agent_seed2",
+  "coordination_dim": "D4",
+  "task_family": "J",
+  "task_name": "bedroom_cross_zone_handoff_relay_fan",
+  "scene_id": "FloorPlan316",
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Source-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Target-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Agent-Target-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 2,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan316",
+      "agentCount": 3,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|-00.56|+00.67|+00.41",
+      "item_2": "CreditCard|-00.48|+00.67|+00.59",
+      "item_3": "CellPhone|-01.17|+00.59|-00.49",
+      "transfer": "Desk|+00.62|+00.00|-01.51",
+      "target": "Shelf|+01.62|+00.56|-00.80"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 2,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|-00.56|+00.67|+00.41"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-00.48|+00.67|+00.59"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-01.17|+00.59|-00.49"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Desk|+00.62|+00.00|-01.51"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Shelf|+01.62|+00.56|-00.80"
+      }
+    ],
+    "design_notes": [
+      "3 clutter items relayed source -> ONE buffer surface (capacity 2) -> storage target by 1 producers feeding the buffer and 2 consumers draining it.",
+      "Second D4 carrier (family J): the single buffer is the coordination chokepoint at any agent count."
+    ]
+  },
+  "allowed_skills": [
+    "Drop",
+    "Explore",
+    "Find",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(item, transfer)",
+        "Target.PickUp(item from transfer)"
+      ],
+      [
+        "Target.PickUp(item)",
+        "Target.Put(item, target)"
+      ]
+    ],
+    "role_constraints": [
+      "Producers handle source-to-buffer; consumers handle buffer-to-target."
+    ],
+    "legal_plan": "Each item must pass through the transfer surface before final placement.",
+    "buffer_stations": [
+      {
+        "objectId": "Desk|+00.62|+00.00|-01.51",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producers": [
+        "agent_1"
+      ],
+      "consumers": [
+        "agent_2",
+        "agent_3"
+      ],
+      "buffer": "Desk|+00.62|+00.00|-01.51",
+      "targets": [
+        "Shelf|+01.62|+00.56|-00.80"
+      ],
+      "note": "Relay enforced at the action menu: producers Put->buffer only; consumers PickUp only on-buffer items, Put->target only. The single buffer is the D4 chokepoint regardless of agent count."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 72,
+    "partial_observability": true,
+    "oracle_steps": 49
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py(J)",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 3,
+    "spawn_seed": 2
+  },
+  "step_budget": 74
+}

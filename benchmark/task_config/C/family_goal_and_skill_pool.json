@@ -1,0 +1,50 @@
+{
+  "task_family": "C",
+  "family_name": "relay_transport",
+  "coordination_dims": [
+    "D4"
+  ],
+  "description": "Producer-consumer relay tasks where one agent must move an object to a transfer receptacle and another agent must complete final delivery.",
+  "scene_scan": {
+    "ranges": [
+      "FloorPlan1-30",
+      "FloorPlan201-230"
+    ],
+    "candidate_rule": "Contains one pickupable object, one transfer receptacle, and one final target receptacle. Generated living-room instances are kept only when source-to-transfer and transfer-to-target placements both succeed.",
+    "validated_living_room_scenes": [
+      "FloorPlan201",
+      "FloorPlan202",
+      "FloorPlan203",
+      "FloorPlan204",
+      "FloorPlan205",
+      "FloorPlan206",
+      "FloorPlan207",
+      "FloorPlan208",
+      "FloorPlan209",
+      "FloorPlan210",
+      "FloorPlan211",
+      "FloorPlan212"
+    ]
+  },
+  "skill_pool": {
+    "Agent-Source": [
+      "Find",
+      "Explore",
+      "PickUp",
+      "Put",
+      "Drop"
+    ],
+    "Agent-Target": [
+      "Find",
+      "Explore",
+      "PickUp",
+      "Put"
+    ]
+  },
+  "goal_predicate_definitions": {
+    "on(objId, receptacleId)": "obj.parentReceptacles contains receptacleId",
+    "buffer_station(transfer)": "The transfer receptacle is the required handoff point between Source and Target.",
+    "legal_plan": "The object must pass through the transfer receptacle before final placement."
+  },
+  "default_success_fn": "all_goal_predicates_and_legal_plan"
+}

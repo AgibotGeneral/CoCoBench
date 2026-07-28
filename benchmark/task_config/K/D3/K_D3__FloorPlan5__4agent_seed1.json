@@ -1,0 +1,241 @@
+{
+    "task_id": "K_D3__FloorPlan5__4agent_seed1",
+    "coordination_dim": "D3",
+    "task_family": "K",
+    "task_name": "shared_knife_slicing",
+    "scene_id": "FloorPlan5",
+    "agent_count": 4,
+    "agents": [
+        {
+            "id": "agent_1",
+            "role": "Chef-1",
+            "allowed_skills": [
+                "Find",
+                "Explore",
+                "Wait",
+                "PickUp",
+                "Drop",
+                "Slice"
+            ]
+        },
+        {
+            "id": "agent_2",
+            "role": "Chef-2",
+            "allowed_skills": [
+                "Find",
+                "Explore",
+                "Wait",
+                "PickUp",
+                "Drop",
+                "Slice"
+            ]
+        },
+        {
+            "id": "agent_3",
+            "role": "Chef-3",
+            "allowed_skills": [
+                "Find",
+                "Explore",
+                "Wait",
+                "PickUp",
+                "Drop",
+                "Slice"
+            ]
+        },
+        {
+            "id": "agent_4",
+            "role": "Chef-4",
+            "allowed_skills": [
+                "Find",
+                "Explore",
+                "Wait",
+                "PickUp",
+                "Drop",
+                "Slice"
+            ]
+        }
+    ],
+    "seed": 1,
+    "assignment": {
+        "item_1": "agent_1",
+        "item_2": "agent_1",
+        "item_3": "agent_2",
+        "item_4": "agent_3",
+        "item_5": "agent_4"
+    },
+    "init_state": {
+        "controller_init": {
+            "scene": "FloorPlan5",
+            "agentCount": 4,
+            "gridSize": 0.25,
+            "visibilityDistance": 1.5
+        },
+        "objects": {
+            "item_1": "Potato|-00.88|+00.80|+00.86",
+            "item_2": "Apple|-00.85|+00.96|+00.19",
+            "item_3": "Tomato|+01.81|+01.06|-01.19",
+            "item_4": "Lettuce|+01.99|+01.16|-00.51",
+            "item_5": "Bread|+02.00|+00.81|-00.55",
+            "knife": "Knife|-00.19|+00.72|+00.06"
+        },
+        "init_actions": [
+            {
+                "action": "InitialRandomSpawn",
+                "randomSeed": 1,
+                "forceVisible": false,
+                "numPlacementAttempts": 5,
+                "placeStationary": true
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Potato|-00.88|+00.80|+00.86"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Apple|-00.85|+00.96|+00.19"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Tomato|+01.81|+01.06|-01.19"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Lettuce|+01.99|+01.16|-00.51"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Bread|+02.00|+00.81|-00.55"
+            },
+            {
+                "action": "assert_present",
+                "objectId": "Knife|-00.19|+00.72|+00.06"
+            },
+            {
+                "action": "PickupObject",
+                "objectId": "Knife|-00.19|+00.72|+00.06",
+                "agentId": 0,
+                "forceAction": true
+            },
+            {
+                "action": "PutObject",
+                "objectId": "CounterTop|-00.67|+00.95|+00.19",
+                "agentId": 0,
+                "forceAction": true,
+                "placeStationary": true
+            },
+            {
+                "action": "PickupObject",
+                "objectId": "Tomato|+01.81|+01.06|-01.19",
+                "agentId": 0,
+                "forceAction": true
+            },
+            {
+                "action": "PutObject",
+                "objectId": "CounterTop|-00.67|+00.95|+00.19",
+                "agentId": 0,
+                "forceAction": true,
+                "placeStationary": true
+            },
+            {
+                "action": "PickupObject",
+                "objectId": "Lettuce|+01.99|+01.16|-00.51",
+                "agentId": 0,
+                "forceAction": true
+            },
+            {
+                "action": "PutObject",
+                "objectId": "CounterTop|-00.67|+00.95|+00.19",
+                "agentId": 0,
+                "forceAction": true,
+                "placeStationary": true
+            },
+            {
+                "action": "PickupObject",
+                "objectId": "Bread|+02.00|+00.81|-00.55",
+                "agentId": 0,
+                "forceAction": true
+            },
+            {
+                "action": "PutObject",
+                "objectId": "CounterTop|-00.67|+00.95|+00.19",
+                "agentId": 0,
+                "forceAction": true,
+                "placeStationary": true
+            }
+        ],
+        "design_notes": [
+            "D3 shared-tool exclusion: all agents share a single Knife.",
+            "Each agent must acquire the Knife, slice their assigned food item(s), then release it.",
+            "PickUp mutual exclusion is engine-enforced: only one agent can hold the Knife.",
+            "Slice requires holding the Knife (executor-enforced precondition).",
+            "sliced_by goal: each item must be sliced by its assigned agent.",
+            "Asymmetric critical sections: some agents slice more items."
+        ]
+    },
+    "allowed_skills": [
+        "Find",
+        "Explore",
+        "Wait",
+        "PickUp",
+        "Drop",
+        "Slice"
+    ],
+    "goal_predicates": [
+        {
+            "predicate": "sliced_by",
+            "object": "item_1",
+            "agent": "agent_1"
+        },
+        {
+            "predicate": "sliced_by",
+            "object": "item_2",
+            "agent": "agent_1"
+        },
+        {
+            "predicate": "sliced_by",
+            "object": "item_3",
+            "agent": "agent_2"
+        },
+        {
+            "predicate": "sliced_by",
+            "object": "item_4",
+            "agent": "agent_3"
+        },
+        {
+            "predicate": "sliced_by",
+            "object": "item_5",
+            "agent": "agent_4"
+        }
+    ],
+    "task_constraints": {
+        "resource_exclusion": [
+            {
+                "resource": "shared_knife",
+                "resource_id": "Knife|-00.19|+00.72|+00.06",
+                "exclusive": true,
+                "mechanism": "pickup_exclusion",
+                "note": "Only one agent can hold the Knife at a time (engine-enforced PickUp exclusion)."
+            }
+        ],
+        "scheduling": "any_permutation",
+        "legal_plan": "Each agent must acquire the shared Knife, slice their food, and release it before the next agent can use it."
+    },
+    "success_fn": "all_goal_predicates_and_legal_plan",
+    "eval_layer": "L0",
+    "difficulty": {
+        "object_count": 6,
+        "step_budget": 50,
+        "partial_observability": true,
+        "oracle_steps": 39
+    },
+    "provenance": {
+        "generator": "gen_shared_knife_d3.py",
+        "placement_verified": true,
+        "pickup_exclusion_verified": true,
+        "room": "kitchen",
+        "asymmetric": true,
+        "spawn_seed": 1
+    },
+    "step_budget": 76,
+    "optimal_makespan": 38
+}

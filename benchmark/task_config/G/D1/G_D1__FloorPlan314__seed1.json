@@ -1,0 +1,121 @@
+{
+  "task_id": "G_D1__FloorPlan314__seed1",
+  "coordination_dim": "D1",
+  "task_family": "G",
+  "task_name": "bedroom_parallel_sorting",
+  "scene_id": "FloorPlan314",
+  "agent_count": 2,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Sorter-A",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Sorter-B",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 1,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan314",
+      "agentCount": 2,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "KeyChain|+00.17|+00.60|+01.24",
+      "item_2": "CellPhone|+00.25|+00.48|-01.27",
+      "target_1": "SideTable|+02.19|+00.00|-00.49",
+      "target_2": "Desk|-00.39|+00.00|-00.81"
+    },
+    "init_actions": [
+      {
+        "action": "InitialRandomSpawn",
+        "randomSeed": 1,
+        "forceVisible": false,
+        "numPlacementAttempts": 5,
+        "placeStationary": true
+      },
+      {
+        "action": "assert_present",
+        "objectId": "KeyChain|+00.17|+00.60|+01.24"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|+00.25|+00.48|-01.27"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|+02.19|+00.00|-00.49"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Desk|-00.39|+00.00|-00.81"
+      }
+    ],
+    "design_notes": [
+      "D1 has no cross-agent ordering dependency: each agent moves one personal item to a distinct receptacle surface.",
+      "Generated instances use only non-openable receptacles so the task stays focused on independent allocation rather than precondition handling."
+    ]
+  },
+  "allowed_skills": [
+    "Find",
+    "Explore",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target_1"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target_2"
+    }
+  ],
+  "task_constraints": {
+    "independent_subtasks": [
+      [
+        "PickUp(item_1)",
+        "Put(item_1, target_1)"
+      ],
+      [
+        "PickUp(item_2)",
+        "Put(item_2, target_2)"
+      ]
+    ],
+    "legal_plan": "The two placement lines are independent and may be executed in either order or in parallel.",
+    "optimal_makespan": 4
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 2,
+    "step_budget": 20,
+    "partial_observability": true,
+    "oracle_steps": 9
+  },
+  "provenance": {
+    "generator": "gen_livingroom_coordination.py",
+    "placement_verified": true,
+    "room": "bedroom",
+    "spawn_seed": 1
+  },
+  "step_budget": 14
+}

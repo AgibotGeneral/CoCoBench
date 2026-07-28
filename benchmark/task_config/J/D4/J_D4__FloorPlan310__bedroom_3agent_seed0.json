@@ -1,0 +1,158 @@
+{
+  "task_id": "J_D4__FloorPlan310__bedroom_3agent_seed0",
+  "coordination_dim": "D4",
+  "task_family": "J",
+  "task_name": "bedroom_cross_zone_handoff_relay_fan",
+  "scene_id": "FloorPlan310",
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": "agent_1",
+      "role": "Agent-Source-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put",
+        "Drop"
+      ]
+    },
+    {
+      "id": "agent_2",
+      "role": "Agent-Target-1",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    },
+    {
+      "id": "agent_3",
+      "role": "Agent-Target-2",
+      "allowed_skills": [
+        "Find",
+        "Explore",
+        "PickUp",
+        "Put"
+      ]
+    }
+  ],
+  "seed": 0,
+  "init_state": {
+    "controller_init": {
+      "scene": "FloorPlan310",
+      "agentCount": 3,
+      "gridSize": 0.25,
+      "visibilityDistance": 1.5
+    },
+    "objects": {
+      "item_1": "CreditCard|-00.31|+00.84|-02.04",
+      "item_2": "CellPhone|-01.71|+00.84|-01.72",
+      "item_3": "Pen|-00.47|+00.84|-01.83",
+      "transfer": "SideTable|+01.69|+00.00|-00.99",
+      "target": "Shelf|-00.96|+01.53|-02.10"
+    },
+    "init_actions": [
+      {
+        "action": "assert_present",
+        "objectId": "CreditCard|-00.31|+00.84|-02.04"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "CellPhone|-01.71|+00.84|-01.72"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Pen|-00.47|+00.84|-01.83"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "SideTable|+01.69|+00.00|-00.99"
+      },
+      {
+        "action": "assert_present",
+        "objectId": "Shelf|-00.96|+01.53|-02.10"
+      }
+    ],
+    "design_notes": [
+      "3 clutter items relayed source -> ONE buffer surface (capacity 2) -> storage target by 1 producers feeding the buffer and 2 consumers draining it.",
+      "Second D4 carrier (family J): the single buffer is the coordination chokepoint at any agent count."
+    ]
+  },
+  "allowed_skills": [
+    "Drop",
+    "Explore",
+    "Find",
+    "PickUp",
+    "Put"
+  ],
+  "goal_predicates": [
+    {
+      "predicate": "on",
+      "object": "item_1",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_2",
+      "receptacle": "target"
+    },
+    {
+      "predicate": "on",
+      "object": "item_3",
+      "receptacle": "target"
+    }
+  ],
+  "task_constraints": {
+    "precedence": [
+      [
+        "Source.Put(item, transfer)",
+        "Target.PickUp(item from transfer)"
+      ],
+      [
+        "Target.PickUp(item)",
+        "Target.Put(item, target)"
+      ]
+    ],
+    "role_constraints": [
+      "Producers handle source-to-buffer; consumers handle buffer-to-target."
+    ],
+    "legal_plan": "Each item must pass through the transfer surface before final placement.",
+    "buffer_stations": [
+      {
+        "objectId": "SideTable|+01.69|+00.00|-00.99",
+        "capacity": 1
+      }
+    ],
+    "producer_consumer": {
+      "producers": [
+        "agent_1"
+      ],
+      "consumers": [
+        "agent_2",
+        "agent_3"
+      ],
+      "buffer": "SideTable|+01.69|+00.00|-00.99",
+      "targets": [
+        "Shelf|-00.96|+01.53|-02.10"
+      ],
+      "note": "Relay enforced at the action menu: producers Put->buffer only; consumers PickUp only on-buffer items, Put->target only. The single buffer is the D4 chokepoint regardless of agent count."
+    }
+  },
+  "success_fn": "all_goal_predicates_and_legal_plan",
+  "eval_layer": "L0",
+  "difficulty": {
+    "object_count": 3,
+    "step_budget": 66,
+    "partial_observability": true,
+    "oracle_steps": 49
+  },
+  "provenance": {
+    "generator": "gen_multiagent_scaling.py(J)",
+    "placement_verified": true,
+    "room": "bedroom",
+    "agent_count": 3
+  },
+  "step_budget": 74
+}

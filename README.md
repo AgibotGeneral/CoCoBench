@@ -1,12 +1,11 @@
 # 🤖 CoCoBench: A Cooperative Coordination Benchmark for Embodied Multi-Agent Task Planning
 
-**Multi-agent embodied coordination benchmark for AI2-THOR / iTHOR.**
 
 <p align="center">
   <img src="doc/teaser.png" alt="CoCoBench overview: task dimensions, agent assignment, and agent planning" width="100%">
 </p>
 
-CoCoBench evaluates whether a VLM can *coordinate* several agents rather than just solve a task. Each instance isolates one coordination mechanism so failures can be attributed precisely:
+**CoCoBench evaluates whether a VLM can *coordinate* several agents rather than just solve a task. Each instance isolates one coordination mechanism so failures can be attributed precisely:**
 
 | Dim | Mechanism | Failure signal |
 |-----|-----------|----------------|

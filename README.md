@@ -1,4 +1,4 @@
-# 🤖 CoCoBench: CoCoBench: A Cooperative Coordination Benchmark for Embodied Multi-Agent Task Planning
+# 🤖 CoCoBench: A Cooperative Coordination Benchmark for Embodied Multi-Agent Task Planning
 
 **Multi-agent embodied coordination benchmark for AI2-THOR / iTHOR.**
 

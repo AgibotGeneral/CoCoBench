@@ -21,8 +21,7 @@ constructor call (CloudRendering platform, ``agentCount`` passed inline) that
 both launches the build and initializes the scene — no separate ``start`` /
 ``reset`` / ``Initialize`` sequence. Everything downstream (``controller.step``
 with a dict action, per-agent ``event.events[i]`` fan-out, settable
-``last_event``) is unchanged from 2.1.0 and verified against the live 5.0 build
-by ``tools/probe_thor5.py``.
+``last_event``) is unchanged from 2.1.0 and verified against the live 5.0 build.
 """
 
 from __future__ import annotations

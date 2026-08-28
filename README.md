@@ -1,116 +1,139 @@
-# CoCoBench: Multi-Agent Embodied Coordination Benchmark
+# 🤖 CoCoBench
 
-This repository contains an AI2-THOR/iTHOR benchmark for evaluating
-multi-agent high-level planning. The benchmark covers task allocation,
-temporal dependencies, resource conflicts, and relay handoffs with two to four
-agents.
+**Multi-agent embodied coordination benchmark for AI2-THOR / iTHOR.**
 
-The repository contains source code and task definitions only. Generated
-trajectories, images, logs, evaluation reports, and model comparison results are
-intentionally excluded.
+CoCoBench evaluates whether a VLM can *coordinate* several agents rather than just solve a task. Each instance isolates one coordination mechanism so failures can be attributed precisely:
 
-## Repository layout
+| Dim | Mechanism | Failure signal |
+|-----|-----------|----------------|
+| `D1` | Independent parallelism / task allocation | One agent does everything; the other idles |
+| `D2` | Sequential dependency / temporal planning | Acting before a precondition holds |
+| `D3` | Resource exclusion / conflict resolution | Two agents contend for one tool or pose |
+| `D4` | Relay handoff / producer–consumer | Consumer acts on an empty transfer buffer |
 
-```text
-benchmark/
-  configs/       Evaluation configuration templates
-  eval/          Oracle, policy, runner, and metric implementations
-  task_config/   Benchmark instances and evaluation-set index
-  tools/         Instance generation and validation utilities
-  *.py           Environment, actions, navigation, and skill execution
-requirements.txt
-```
+**897 instances** · 6 task families · 2–4 agents · kitchen / living-room / bedroom scenes · no judge model — success is evaluated from simulator goal state.
 
-## Installation
+---
 
-Python 3.9 or later is recommended. AI2-THOR rendering may additionally require
-a working display or Vulkan-capable GPU, depending on the selected platform.
+## 📦 Installation
+
+> Linux · Python ≥ 3.9 · Vulkan-capable GPU (for headless rendering)
 
 ```bash
+git clone <repository-url>
+cd CoCoBench-anonymous
+
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cd benchmark
 ```
 
-## Oracle smoke test
+AI2-THOR downloads its Unity build on first run (~1–2 GB, cached under `~/.ai2thor`).
 
-Run one task with its built-in reference plan:
+---
 
-```bash
-python eval/runner.py \
-  --task-config task_config/A/D1/A_D1__FloorPlan1__seed0.json \
-  --oracle-plan auto
-```
+## 🗂 Dataset
 
-Generated files are written under `benchmark/outputs/`, which is ignored by
-Git.
+No download needed — all 897 instances are versioned under `benchmark/task_config/`.
 
-## Offline policy smoke test
+| Family | Instances | Scenes | Theme |
+|--------|-----------|--------|-------|
+| `A` | 41 | Kitchen | Grocery storage, ordered cabinet loading |
+| `C` | 204 | Living room / bedroom | Ordered container loading, relay |
+| `G` | 104 | Living room / bedroom | Parallel personal-item sorting |
+| `H` | 206 | Bedroom / living room | Drawer storage and ordered loading |
+| `J` | 112 | Bedroom / living room | Cross-zone handoff relay |
+| `K` | 230 | Kitchen | Shared-knife slicing under exclusion |
 
-The mock backend exercises the evaluation pipeline without network access or an
-API key:
+The `rep240` curated subset (240 instances, stratified by dim × agents × cell) is recommended for full-coverage runs at reasonable cost.
 
-```bash
-python eval/evaluate_vlm.py \
-  --vlm-backend mock \
-  --eval-set rep240 \
-  --limit 2 \
-  --max-steps 3 \
-  --exp-name mock-smoke
-```
+---
 
-## VLM evaluation
+## 🚀 Running an evaluation
 
-Copy `benchmark/configs/config.yaml` to a local configuration if you need to
-change the endpoint or defaults. Keep credentials in environment variables:
+### 1. Set credentials
 
 ```bash
-export OPENAI_API_KEY="<your-api-key>"
+# OpenAI-compatible
+export OPENAI_API_KEY="..."
 export OPENAI_BASE_URL="https://api.openai.com/v1"
 
+# Anthropic-compatible
+export ANTHROPIC_AUTH_TOKEN="..."
+export ANTHROPIC_BASE_URL="https://api.anthropic.com"
+export ANTHROPIC_MODEL="<model-id>"
+```
+
+### 2. Batch evaluation
+
+```bash
+cd benchmark
+
 python eval/evaluate_vlm.py \
-  --config config.yaml \
-  --model-name <model-id> \
+  --vlm-backend openai \
+  --vlm-model <model-id> \
   --eval-set rep240 \
-  --exp-name example-run
+  --jobs 8 \
+  --resume \
+  --exp-name my-run
 ```
 
-For an Anthropic-compatible endpoint, select `--vlm-backend anthropic` and set
-`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_MODEL`.
-
-The batch helper can run centralized and distributed conditions:
+### 3. Condition sweep (centralized / distributed × image / blind)
 
 ```bash
-bash run_eval.sh \
-  --model <model-id> \
-  --conditions C0_image,D0_image,D1_image \
-  --eval-set rep240 \
-  --jobs 4
+bash run_eval.sh --model <model-id> --conditions all --eval-set rep240 --jobs 8
 ```
 
-## Dataset
+Condition shortcuts: `all`, `image`, `blind`, or individual names like `C0_image`, `D1_blind`.
 
-`benchmark/task_config/index.json` indexes 897 instances across four
-coordination dimensions:
-
-- `D1`: independent parallelism and task allocation
-- `D2`: sequential dependencies and temporal planning
-- `D3`: resource exclusion and conflict resolution
-- `D4`: relay handoff and producer-consumer coordination
-
-The `rep240` curated subset can be used for smaller evaluation runs. Use
-`tools/generate_index.py` after changing task definitions.
-
-## Validation and metrics
+### 4. Single task
 
 ```bash
-# Validate a subset with oracle policies.
-python tools/validate_instances.py --only-cell K_D3 --gpu-device 0
+# Oracle reference policy
+python eval/runner.py --task-config task_config/A/D1/A_D1__FloorPlan1__seed0.json --oracle-plan auto
 
-# Compute metrics for a generated trajectory.
-python eval/metrics.py outputs/task_runs/<task-id>/trajectory.json
+# Model-driven
+python eval/runner.py --task-config <path> --vlm --vlm-backend openai --vlm-model <model-id>
 ```
 
-Metrics are computed from trajectories and task predicates without a separate
-judge model.
+---
+
+## 📊 Metrics
+
+Results land in `benchmark/outputs/eval_runs/<exp-name>/`. Recompute from a trajectory at any time:
+
+```bash
+python eval/metrics.py outputs/eval_runs/<exp>/<set>/*/trajectory.json
+```
+
+Key metrics: `success`, `subgoal_success_rate`, `legal_plan`, `construct_score` (per-dimension coordination score ∈ [0, 1]), `makespan`, `load_imbalance`, `dependency_violations`, `occupancy_conflicts`.
+
+---
+
+## 🧩 Adding a model backend
+
+Implement `choose(prompt, image_path, menu) -> str` and register it in `eval/vlm_policy.py`:
+
+```python
+class MyVLM:
+    name = "myvlm"
+    def choose(self, prompt, image_path, menu):
+        return "ACTION: 7"   # or "DONE"
+```
+
+Built-in baselines: `random` (no-strategy floor), `greedy` (skill-priority heuristic), `mock` (deterministic, no network).
+
+---
+
+## 📁 Repository layout
+
+```
+benchmark/
+  eval/            Runner, batch evaluator, metrics, VLM backends, oracles
+  task_config/     897 instances + eval-set index + rep240 subset
+  tools/           Instance generators, index builder, validator
+  *.py             Environment, actions, navigation, skill execution
+  run_eval.sh      Condition-sweep driver
+  configs/         Evaluation config template
+requirements.txt
+```

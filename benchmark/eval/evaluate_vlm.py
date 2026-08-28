@@ -418,7 +418,7 @@ def main() -> int:
     parser.add_argument("--model-name", default="", help="Model profile name inside the YAML config's models section.")
     parser.add_argument("--task-root", default=str(TASK_ROOT))
     parser.add_argument("--index", default=str(INDEX_PATH), help="task_config/index.json; eval sets are read from here.")
-    parser.add_argument("--eval-set", action="append", default=[], help="Eval set/task id from index: D3, F, F_D3, or a task_id. May be comma-separated.")
+    parser.add_argument("--eval-set", action="append", default=[], help="Eval set/task id from index: a dim (D3), family (K), cell (K_D3), curated subset (rep240), or a task_id. May be comma-separated.")
     parser.add_argument("--only-cell", default="")
     parser.add_argument("--only-family", default="")
     parser.add_argument("--only-dim", default="")

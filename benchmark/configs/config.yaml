@@ -1,25 +1,45 @@
-# Public evaluation template. Keep API credentials in environment variables.
+# CoCoBench evaluation template. Keep API credentials in environment variables
+# (OPENAI_API_KEY / OPENAI_BASE_URL, or ANTHROPIC_AUTH_TOKEN / ANTHROPIC_BASE_URL);
+# every key below is a default that the matching eval/evaluate_vlm.py flag overrides.
+
+# --- Model ------------------------------------------------------------------
+# Without a `models:` section, model_name is used as the model id sent to the
+# endpoint. With one, it selects a named profile (see the commented example).
 model_name: example-model
+
+# models:
+#   gpt-4o:
+#     vlm_backend: openai
+#     vlm_model: gpt-4o
+#     obs_mode: image
+#   my-blind-run:
+#     vlm_backend: openai
+#     vlm_model: gpt-4o
+#     obs_mode: blind
 
 vlm_backend: openai
 openai_base_url: https://api.openai.com/v1
-openai_max_tokens: null
-obs_mode: image
+openai_max_tokens: null        # null omits max_tokens from the request
+obs_mode: image                # image | blind
 
-eval_set: []
+# --- Instance selection -----------------------------------------------------
+eval_set: []                   # e.g. [rep240] or [D3, K_D3]; empty = all 897
 only_cell: ""
 only_family: ""
 only_dim: ""
 task_id: []
-limit: 0
+limit: 0                       # 0 = no limit
 
-out_root: null
+# --- Output -----------------------------------------------------------------
+out_root: null                 # null = benchmark/outputs/eval_runs
 
+# --- Rendering --------------------------------------------------------------
 gpu_device: 0
-platform: CloudRendering
+platform: CloudRendering       # CloudRendering (headless GPU) | Linux64 (X display)
 width: 300
 height: 300
 
-max_steps: null
-timeout: null
+# --- Episode budget ---------------------------------------------------------
+max_steps: null                # null = use each task's difficulty.step_budget
+timeout: null                  # null = no per-episode wall-clock cap
 dry_run: false

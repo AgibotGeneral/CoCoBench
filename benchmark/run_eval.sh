@@ -1,5 +1,5 @@
 #!/bin/bash
-# Unified CoordBench VLM evaluation runner.
+# Unified CoCoBench VLM evaluation runner.
 #
 # Examples:
 #   bash run_eval.sh --model <model-id> --conditions all

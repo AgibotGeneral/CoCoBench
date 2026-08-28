@@ -157,7 +157,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run oracle validation over task_config instances.")
     parser.add_argument("--task-root", default=str(TASK_ROOT), help="task_config directory.")
     parser.add_argument("--out-root", default=str(REPORT_DIR), help="Directory for validation runs and report.")
-    parser.add_argument("--only-cell", default="", help="Filter to one cell, e.g. F_D3.")
+    parser.add_argument("--only-cell", default="", help="Filter to one cell, e.g. K_D3.")
     parser.add_argument("--name-contains", default="", help="Only validate configs whose filename contains this substring (e.g. seed1).")
     parser.add_argument("--min-agents", type=int, default=0, help="Only validate configs with agent_count >= this (e.g. 3 for the scaling axis).")
     parser.add_argument("--limit", type=int, default=0, help="Validate at most N configs.")

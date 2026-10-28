@@ -26,11 +26,9 @@
   <strong>897 instances · 4 coordination dimensions · 6 task families · 2–4 agents</strong>
 </p>
 
-<!-- Add the original overview image at doc/teaser.png, then uncomment this block.
 <p align="center">
   <img src="doc/teaser.png" alt="CoCoBench overview: task dimensions, agent assignment, and agent planning" width="100%">
 </p>
--->
 
 **CoCoBench evaluates whether a VLM can *coordinate* several agents rather than just solve a task. Each instance isolates one coordination mechanism so failures can be attributed precisely:**
 

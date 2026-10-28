@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="doc/cocobench-icon.svg" alt="CoCoBench: three robots coordinating a shared task" width="88" height="88">
-</p>
-
 <h1 align="center">CoCoBench</h1>
 
 <p align="center">
